@@ -46,6 +46,10 @@ out/
 # .idea/misc.xml
 # *.ipr
 
+# Other
+.idea/.name
+.idea/jarRepositories.xml
+
 ### Gradle ###
 .gradle
 build/
