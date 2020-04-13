@@ -25,3 +25,21 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+tasks.register('initCodeStyle') {
+	group = 'build setup'
+	description = 'Initialize IDEA code style file'
+	File codeStyleFile = new File(".idea/codeStyles/Project.xml")
+
+	onlyIf {
+		!codeStyleFile.exists()
+	}
+	doLast {
+		codeStyleFile << new URL("https://git.io/JfeYQ").getText()
+		if (!codeStyleFile.exists()) {
+			throw new FileNotFoundException()
+		} else logger.quiet("Downloaded ${codeStyleFile.name} from Gist")
+	}
+}
+// Check code formatting before applying
+spotlessApply.dependsOn('initCodeStyle', 'spotlessJavaCheck')
