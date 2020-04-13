@@ -1,2 +1,5 @@
 # Default ignored files
 /workspace.xml
+
+# Code style
+/codeStyles/Project.xml
