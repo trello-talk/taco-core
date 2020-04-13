@@ -4,6 +4,8 @@ plugins {
     id "com.diffplug.gradle.spotless" version "3.28.1"
     id 'java'
 }
+// Personal Spotless formatting rules
+apply from: "https://git.io/JfekU"
 
 group = 'io.github.trellotalk'
 version = '0.0.1-SNAPSHOT'
