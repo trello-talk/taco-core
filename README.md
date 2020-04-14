@@ -1,2 +1,3 @@
-# taco-two-click
-The backend auth server for the taco rewrite
+# Taco Core
+Backend auth server for Taco rewrite
+
