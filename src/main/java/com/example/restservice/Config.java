@@ -16,6 +16,7 @@ public class Config extends Properties {
 	public enum Key {
 
 		DISCORD_CLIENT_ID("discord_client_id"),
+		DISCORD_CLIENT_SECRET("discord_client_secret"),
 		DISCORD_REDIRECT_URI("discord_redirect_uri");
 
 		private final String value;
