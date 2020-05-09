@@ -92,4 +92,4 @@ gradle-app.setting
 hs_err_pid*
 
 # Taco stuff
-config.ini
+application.properties

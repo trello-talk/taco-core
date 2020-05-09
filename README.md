@@ -1,6 +1,26 @@
 # Taco Core
+
 Backend auth server for Taco rewrite
 
+## Configuration
+
+Create an `application.properties` file with the following properties:
+```
+spring.datasource.url=<DB_JDBC_URL>
+spring.datasource.username=<DB_USERNAME>
+spring.datasource.password=<DB_PASSWORD>
+
+discord.client_id=<YOUR_CLIENT_ID>
+discord.client_secret=<YOUR_CLIENT_SECRET>
+discord.user_agent=Taco Core (https://github.com/trello-talk/taco-core, WIP)
+
+trello.api_key=<YOUR_API_KEY>
+trello.api_secret=<YOUR_API_SECRET>
+trello.app_name=<YOUR_APP_NAME>
+
+spring.session.store-type=jdbc
+spring.session.jdbc.initialize-schema: always
+```
 ## Code style
 
 - Run `./gradlew initCodeStyle` to pull IntelliJ IDEA project code style file from Gist.

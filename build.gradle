@@ -3,6 +3,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id "com.diffplug.gradle.spotless" version "3.28.1"
 	id 'java'
+	id 'war'
 }
 // Personal Spotless formatting rules
 apply from: "https://git.io/JfekU"
@@ -17,6 +18,9 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'com.github.scribejava:scribejava-apis:6.4.1'
+	implementation 'org.postgresql:postgresql:42.2.12.jre7'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
@@ -24,6 +28,16 @@ dependencies {
 	// https://mvnrepository.com/artifact/commons-io/commons-io
 	compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
+	// https://mvnrepository.com/artifact/org.json/json
+	compile group: 'org.json', name: 'json', version: '20190722'
+
+	// https://mvnrepository.com/artifact/com.konghq/unirest-java
+	providedCompile group: 'com.konghq', name: 'unirest-java', version: '2.2.00'
+
+	implementation platform('org.springframework.session:spring-session-bom:Corn-SR2')
+
+	compile 'org.springframework.session:spring-session-core'
+	compile 'org.springframework.session:spring-session-jdbc'
 }
 
 test {
