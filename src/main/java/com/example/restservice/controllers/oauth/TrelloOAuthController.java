@@ -54,14 +54,11 @@ public class TrelloOAuthController extends ControllerBase {
 			return redirectView;
 		}
 
-		if (service == null)
-		{
-			service = new ServiceBuilder(apiKey)
-					.apiSecret(apiSecret)
-					.callback(getBaseUri(request)+"/trelloredirect")
-					.build(TrelloApi.instance());
-			requestToken = service.getRequestToken();
-		}
+		service = new ServiceBuilder(apiKey)
+				.apiSecret(apiSecret)
+				.callback(getBaseUri(request)+"/trelloredirect")
+				.build(TrelloApi.instance());
+		requestToken = service.getRequestToken();
 
 		RedirectView redirectView = new RedirectView();
 		String authUrl = service.getAuthorizationUrl(requestToken) + "&name=" + appName;
