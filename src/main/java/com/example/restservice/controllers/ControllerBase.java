@@ -1,8 +1,9 @@
 package com.example.restservice.controllers;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class ControllerBase {
 	protected String getBaseUri(HttpServletRequest request) throws MalformedURLException {

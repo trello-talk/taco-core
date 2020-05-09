@@ -1,13 +1,11 @@
 package com.example.restservice.controllers.oauth;
 
-import com.example.restservice.controllers.ControllerBase;
-import com.github.scribejava.apis.TrelloApi;
-import com.github.scribejava.core.builder.ServiceBuilder;
-import com.github.scribejava.core.exceptions.OAuthException;
-import com.github.scribejava.core.model.OAuth1AccessToken;
-import com.github.scribejava.core.model.OAuth1RequestToken;
-import com.github.scribejava.core.oauth.OAuth10aService;
-import kong.unirest.Unirest;
+import java.io.*;
+import java.util.concurrent.ExecutionException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,10 +14,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.io.*;
-import java.util.concurrent.ExecutionException;
+import com.example.restservice.controllers.ControllerBase;
+import com.github.scribejava.apis.TrelloApi;
+import com.github.scribejava.core.builder.ServiceBuilder;
+import com.github.scribejava.core.exceptions.OAuthException;
+import com.github.scribejava.core.model.OAuth1AccessToken;
+import com.github.scribejava.core.model.OAuth1RequestToken;
+import com.github.scribejava.core.oauth.OAuth10aService;
+
+import kong.unirest.Unirest;
 
 @RestController
 public class TrelloOAuthController extends ControllerBase {
@@ -87,8 +90,7 @@ public class TrelloOAuthController extends ControllerBase {
 		}
 
 		OAuth1AccessToken accessToken;
-		try
-		{
+		try {
 			accessToken = service.getAccessToken(requestToken, verifier);
 		} catch (OAuthException e) {
 			RedirectView redirectView = new RedirectView();

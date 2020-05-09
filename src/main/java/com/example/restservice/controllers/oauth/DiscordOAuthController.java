@@ -1,7 +1,13 @@
 package com.example.restservice.controllers.oauth;
 
-import com.example.restservice.controllers.ControllerBase;
-import kong.unirest.Unirest;
+import java.io.*;
+import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.security.SecureRandom;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,12 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.io.*;
-import java.math.BigInteger;
-import java.net.MalformedURLException;
-import java.security.SecureRandom;
+import com.example.restservice.controllers.ControllerBase;
+
+import kong.unirest.Unirest;
 
 @RestController
 public class DiscordOAuthController extends ControllerBase {
@@ -89,8 +92,7 @@ public class DiscordOAuthController extends ControllerBase {
 
 		RedirectView redirectView = new RedirectView();
 		String redirectPath;
-		try
-		{
+		try {
 			session.setAttribute("token", json.getString("access_token"));
 			session.setAttribute("refresh", json.getString("refresh_token"));
 			redirectPath = "/trellooauth";
