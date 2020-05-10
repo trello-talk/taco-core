@@ -1,13 +1,17 @@
 package com.example.restservice.controllers.oauth;
 
 import java.io.*;
+import java.sql.SQLException;
 import java.util.concurrent.ExecutionException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,76 +43,80 @@ public class TrelloOAuthController extends ControllerBase {
 	private String userAgent;
 
 	private OAuth10aService service;
-	private OAuth1RequestToken requestToken;
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
 	@GetMapping("/trellooauth")
-	public RedirectView trelloOauth(HttpServletRequest request) throws InterruptedException,
+	public void trelloOauth(HttpServletRequest request, HttpServletResponse response) throws InterruptedException,
 			ExecutionException,
 			IOException {
 
 		HttpSession session = request.getSession(false);
 
 		if (session == null) {
-			RedirectView redirectView = new RedirectView();
-			redirectView.setUrl(getBaseUri(request) + "/invalidsession");
-			return redirectView;
+			// No session, could be malicious.
+			response.sendRedirect("/invalidsession");
+			return;
 		}
 
 		service = new ServiceBuilder(apiKey)
 				.apiSecret(apiSecret)
 				.callback(getBaseUri(request)+"/trelloredirect")
 				.build(TrelloApi.instance());
-		requestToken = service.getRequestToken();
+		OAuth1RequestToken requestToken = service.getRequestToken();
 
-		RedirectView redirectView = new RedirectView();
-		String authUrl = service.getAuthorizationUrl(requestToken) + "&name=" + appName;
-		redirectView.setUrl(authUrl);
-		return redirectView;
+		session.setAttribute("request", requestToken.getToken());
+		session.setAttribute("secret", requestToken.getTokenSecret());
+		response.sendRedirect(service.getAuthorizationUrl(requestToken) + "&name=" + appName);
 	}
 
 	@GetMapping("/trelloredirect")
-	public RedirectView trelloRedirect(HttpServletRequest request,
+	public void trelloRedirect(HttpServletRequest request, HttpServletResponse response,
 							   @RequestParam(value = "oauth_verifier", defaultValue = "") String verifier) throws InterruptedException, ExecutionException, IOException {
 
 		HttpSession session = request.getSession(false);
 		if (session == null) {
-			RedirectView redirectView = new RedirectView();
-			redirectView.setUrl(getBaseUri(request) + "/invalidsession");
-			return redirectView;
+			// No session, could be malicious.
+			response.sendRedirect("/invalidsession");
+			return;
 		}
 
 		String discordToken = (String) session.getAttribute("token");
 		String discordRefresh = (String) session.getAttribute("refresh");
+		String requestToken = (String) session.getAttribute("request");
+		String requestSecret = (String) session.getAttribute("secret");
 
-		if (discordToken == null || discordRefresh == null) {
-			RedirectView redirectView = new RedirectView();
-			redirectView.setUrl(getBaseUri(request) + "/invalidsession");
-			return redirectView;
+		if (discordToken == null || discordRefresh == null || requestToken == null || requestSecret == null) {
+			// If one of these attributes isn't set, something is wrong, could be malicous
+			response.sendRedirect("/invalidsession");
+			return;
 		}
 
 		OAuth1AccessToken accessToken;
 		try {
-			accessToken = service.getAccessToken(requestToken, verifier);
+			accessToken = service.getAccessToken(new OAuth1RequestToken(requestToken, requestSecret),
+					verifier);
 		} catch (OAuthException e) {
-			RedirectView redirectView = new RedirectView();
-			redirectView.setUrl(getBaseUri(request) + "/failed");
-			return redirectView;
+			response.sendRedirect("/failed");
+			return;
 		}
 		String trelloToken = accessToken.getToken();
 		String trelloID = getTrelloID(trelloToken);
 		String userID = getDiscordID(discordToken);
 
-		jdbcTemplate.update(
-				"INSERT INTO \"Users\" " +
-						"(\"userID\", \"trelloToken\", \"trelloID\", \"discordToken\", \"discordRefresh\")" +
-				"VALUES (?, ?, ?, ?, ?)", userID, trelloToken, trelloID, discordToken, discordRefresh);
+		try {
+			jdbcTemplate.update(
+					"INSERT INTO \"Users\" " +
+							"(\"userID\", \"trelloToken\", \"trelloID\", \"discordToken\", \"discordRefresh\")" +
+							"VALUES (?, ?, ?, ?, ?)", userID, trelloToken, trelloID, discordToken, discordRefresh);
+		} catch (DuplicateKeyException e) {
+			System.out.println("here");
+			response.sendRedirect("/alreadyauthorized");
+			return;
+		}
 
-		RedirectView redirectView = new RedirectView();
-		redirectView.setUrl(getBaseUri(request) + "/success");
-		return redirectView;
+		response.sendRedirect("/success");
 	}
 
 	private String getTrelloID(String token) {
