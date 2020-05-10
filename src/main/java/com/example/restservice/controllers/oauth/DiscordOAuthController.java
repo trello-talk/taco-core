@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.security.SecureRandom;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONException;
@@ -32,49 +33,47 @@ public class DiscordOAuthController extends ControllerBase {
 	@Value("${discord.user_agent}")
 	private String userAgent;
 
-	private final String state = new BigInteger(130, new SecureRandom()).toString(32);
-
 	@GetMapping("/discordoauth")
-	public RedirectView discordOauth(HttpServletRequest request) throws MalformedURLException {
-
+	public void discordOauth(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		HttpSession session = request.getSession(false);
 
 		if (session == null) {
-			RedirectView redirectView = new RedirectView();
-			redirectView.setUrl(getBaseUri(request) + "/invalidsession");
-			return redirectView;
+			// No session, could be malicous.
+			response.sendRedirect("/invalidsession");
+			return;
 		}
 
+		// State is a 32 bit cryptographically secure random value.
+		String state = new BigInteger(130, new SecureRandom()).toString(32);
 		session.setAttribute("state", state);
-		RedirectView redirectView = new RedirectView();
-		redirectView.setUrl("https://discordapp.com/oauth2/authorize" +
+
+		response.sendRedirect("https://discordapp.com/oauth2/authorize" +
 				"?client_id=" + clientId +
-				"&redirect_uri=" + getBaseUri(request) + "/discordredirect" +
+				"&redirect_uri=" + (getBaseUri(request) + "/discordredirect") +
 				"&state=" + state +
 				"&response_type=code" +
 				"&scope=identify");
-		return redirectView;
 	}
 
 	@GetMapping("/discordredirect")
-	public RedirectView discordRedirect(HttpServletRequest request,
+	public void discordRedirect(HttpServletRequest request, HttpServletResponse response,
 										@RequestParam(value = "code", defaultValue = "") String code,
 										@RequestParam(value = "state", defaultValue = "") String state) throws IOException {
 
 		HttpSession session = request.getSession(false);
 
 		if (session == null) {
-			RedirectView redirectView = new RedirectView();
-			redirectView.setUrl(getBaseUri(request) + "/invalidsession");
-			return redirectView;
+			// No session, could be malicious.
+			response.sendRedirect("/invalidsession");
+			return;
 		}
 
 		String sessionState = (String) session.getAttribute("state");
 		if (sessionState != null && !sessionState.equals(state))
 		{
-			RedirectView redirectView = new RedirectView();
-			redirectView.setUrl(getBaseUri(request) + "/invalidsession");
-			return redirectView;
+			// Incorrect state, so could be a malicious request.
+			response.sendRedirect("/invalidsession");
+			return;
 		}
 
 		JSONObject json = Unirest.post("https://discordapp.com/api/oauth2/token")
@@ -90,16 +89,14 @@ public class DiscordOAuthController extends ControllerBase {
 				.getBody()
 				.getObject();
 
-		RedirectView redirectView = new RedirectView();
-		String redirectPath;
 		try {
 			session.setAttribute("token", json.getString("access_token"));
 			session.setAttribute("refresh", json.getString("refresh_token"));
-			redirectPath = "/trellooauth";
+			// Success.
+			response.sendRedirect("/trellooauth");
 		} catch (JSONException e) {
-			redirectPath = "/failed";
+			// Probably clicked cancel, or an other error occurred.
+			response.sendRedirect("/failed");
 		}
-		redirectView.setUrl(getBaseUri(request) + redirectPath);
-		return redirectView;
 	}
 }
