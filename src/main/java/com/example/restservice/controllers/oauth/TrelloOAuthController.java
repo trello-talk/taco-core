@@ -111,7 +111,6 @@ public class TrelloOAuthController extends ControllerBase {
 							"(\"userID\", \"trelloToken\", \"trelloID\", \"discordToken\", \"discordRefresh\")" +
 							"VALUES (?, ?, ?, ?, ?)", userID, trelloToken, trelloID, discordToken, discordRefresh);
 		} catch (DuplicateKeyException e) {
-			System.out.println("here");
 			response.sendRedirect("/alreadyauthorized");
 			return;
 		}
