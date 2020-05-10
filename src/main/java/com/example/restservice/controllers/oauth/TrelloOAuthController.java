@@ -104,7 +104,7 @@ public class TrelloOAuthController extends ControllerBase {
 
 		try {
 			jdbcTemplate.update(
-					"INSERT INTO \"Users\" " +
+					"INSERT INTO users " +
 							"(\"userID\", \"trelloToken\", \"trelloID\", \"discordToken\", \"discordRefresh\")" +
 							"VALUES (?, ?, ?, ?, ?)", userID, trelloToken, trelloID, discordToken, discordRefresh);
 		} catch (DuplicateKeyException e) {
