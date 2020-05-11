@@ -1,6 +1,7 @@
 package com.example.restservice.controllers.oauth;
 
 import java.io.*;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -104,12 +105,15 @@ public class TrelloOAuthController extends ControllerBase {
 		String trelloToken = accessToken.getToken();
 		String trelloID = getTrelloID(trelloToken);
 		String userID = getDiscordID(discordToken);
+		Date now = new Date();
 
 		try {
 			jdbcTemplate.update(
 					"INSERT INTO users " +
-							"(\"userID\", \"trelloToken\", \"trelloID\", \"discordToken\", \"discordRefresh\")" +
-							"VALUES (?, ?, ?, ?, ?)", userID, trelloToken, trelloID, discordToken, discordRefresh);
+							"(\"userID\", \"trelloToken\", \"trelloID\", \"discordToken\", " +
+							"\"discordRefresh\", \"createdAt\", \"updatedAt\")" +
+							"VALUES (?, ?, ?, ?, ?, ?, ?)", userID, trelloToken, trelloID, discordToken,
+					discordRefresh, now, now);
 		} catch (DuplicateKeyException e) {
 			response.sendRedirect("/alreadyauthorized");
 			return;
