@@ -65,7 +65,10 @@ public class TrelloOAuthController extends ControllerBase {
 
 		session.setAttribute("request", requestToken.getToken());
 		session.setAttribute("secret", requestToken.getTokenSecret());
-		response.sendRedirect(service.getAuthorizationUrl(requestToken) + "&name=" + appName);
+		response.sendRedirect(service.getAuthorizationUrl(requestToken) +
+				"&name=" + appName +
+				"&expiration=never" +
+				"&scope=read,write,account");
 	}
 
 	@GetMapping("/trelloredirect")
