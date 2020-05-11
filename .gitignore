@@ -93,3 +93,7 @@ hs_err_pid*
 
 # Taco stuff
 application.properties
+.idea/**/dataSources.xml
+.idea/**/webServers.xml
+.idea/**/sshConfigs.xml
+.idea/**/deployment.xml
