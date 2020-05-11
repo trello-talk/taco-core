@@ -9,5 +9,7 @@ CREATE TABLE users (
     "discordToken" varchar(255),
     "discordRefresh" varchar(255),
     "locale" varchar(255),
-    "prefixes" varchar(255)[] DEFAULT '{}' NOT NULL
+    "prefixes" varchar(255)[] DEFAULT '{}' NOT NULL,
+    "createdAt" timestamp with time zone,
+    "updatedAt" timestamp with time zone
 )
