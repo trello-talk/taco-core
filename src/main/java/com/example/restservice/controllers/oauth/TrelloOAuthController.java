@@ -107,6 +107,11 @@ public class TrelloOAuthController extends ControllerBase {
 		String userID = getDiscordID(discordToken);
 		Date now = new Date();
 
+		if (trelloToken == null) {
+			response.sendRedirect("/unexpectederror");
+			return;
+		}
+
 		try {
 			jdbcTemplate.update(
 					"INSERT INTO users " +
