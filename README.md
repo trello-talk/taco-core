@@ -23,6 +23,7 @@ spring.session.store-type=jdbc
 spring.session.jdbc.initialize-schema: always
 
 server.port=<YOUR_PORT>
+server.hostname=<YOUR_HOSTNAME>
 ```
 ## Code style
 

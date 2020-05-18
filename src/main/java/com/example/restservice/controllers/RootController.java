@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class RootController extends ControllerBase {
+public class RootController {
 	@GetMapping("/")
 	public void rootController(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession();

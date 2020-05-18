@@ -15,12 +15,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.restservice.controllers.ControllerBase;
-
 import kong.unirest.Unirest;
 
 @RestController
-public class DiscordOAuthController extends ControllerBase {
+public class DiscordOAuthController {
+
+	@Value("${server.hostname}")
+	private String hostname;
 
 	@Value("${discord.client_id}")
 	private String clientId;
@@ -47,7 +48,7 @@ public class DiscordOAuthController extends ControllerBase {
 
 		response.sendRedirect("https://discordapp.com/oauth2/authorize" +
 				"?client_id=" + clientId +
-				"&redirect_uri=" + (getBaseUri(request) + "/discordredirect") +
+				"&redirect_uri=" + hostname + "/discordredirect" +
 				"&state=" + state +
 				"&response_type=code" +
 				"&scope=identify");
@@ -80,7 +81,7 @@ public class DiscordOAuthController extends ControllerBase {
 				.field("grant_type", "authorization_code")
 				.field("scope", "identify")
 				.field("code", code)
-				.field("redirect_uri", getBaseUri(request) + "/discordredirect")
+				.field("redirect_uri", hostname + "/discordredirect")
 				.field("client_id", clientId)
 				.field("client_secret", clientSecret)
 				.asJson()

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.restservice.controllers.ControllerBase;
 import com.github.scribejava.apis.TrelloApi;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.exceptions.OAuthException;
@@ -27,7 +26,11 @@ import com.github.scribejava.core.oauth.OAuth10aService;
 import kong.unirest.Unirest;
 
 @RestController
-public class TrelloOAuthController extends ControllerBase {
+public class TrelloOAuthController {
+
+	@Value("${server.hostname}")
+	private String hostname;
+
 	@Value("${trello.api_key}")
 	private String apiKey;
 
@@ -60,7 +63,7 @@ public class TrelloOAuthController extends ControllerBase {
 
 		service = new ServiceBuilder(apiKey)
 				.apiSecret(apiSecret)
-				.callback(getBaseUri(request)+"/trelloredirect")
+				.callback(hostname + "/trelloredirect")
 				.build(TrelloApi.instance());
 		OAuth1RequestToken requestToken = service.getRequestToken();
 
