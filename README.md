@@ -18,6 +18,9 @@ trello.api_key=<YOUR_API_KEY>
 trello.api_secret=<YOUR_API_SECRET>
 trello.app_name=<YOUR_APP_NAME>
 
+rdb.hostname=localhost
+rdb.port=32769
+
 server.servlet.session.timeout=<TIMEOUT_IN_SECONDS>
 spring.session.store-type=jdbc
 spring.session.jdbc.initialize-schema: always
