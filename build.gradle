@@ -37,6 +37,8 @@ dependencies {
 
 	compile 'org.springframework.session:spring-session-core'
 	compile 'org.springframework.session:spring-session-jdbc'
+
+	compile group: 'com.rethinkdb', name: 'rethinkdb-driver', version: '2.3.3'
 }
 
 test {

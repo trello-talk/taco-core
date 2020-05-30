@@ -25,8 +25,14 @@ import com.github.scribejava.core.oauth.OAuth10aService;
 
 import kong.unirest.Unirest;
 
+import com.rethinkdb.RethinkDB;
+import com.rethinkdb.net.Connection;
+
+
 @RestController
 public class TrelloOAuthController {
+
+	public static final RethinkDB r = RethinkDB.r;
 
 	@Value("${server.hostname}")
 	private String hostname;
@@ -42,6 +48,12 @@ public class TrelloOAuthController {
 
 	@Value("${discord.user_agent}")
 	private String userAgent;
+
+	@Value("${rdb.hostname}")
+	private String rdbHostname;
+
+	@Value("${rdb.port}")
+	private int rdbPort;
 
 	private OAuth10aService service;
 
@@ -116,13 +128,23 @@ public class TrelloOAuthController {
 		}
 
 		try {
+			Connection conn = r.connection().hostname(rdbHostname).port(rdbPort).connect();
+			r.db("Trello").table("users").insert(
+					r.hashMap("current", null)
+							.with("id", userID)
+							.with("trelloID", trelloID)
+							.with("trelloToken", trelloToken)
+			).run(conn);
+
 			jdbcTemplate.update(
 					"INSERT INTO users " +
 							"(\"userID\", \"trelloToken\", \"trelloID\", \"discordToken\", " +
 							"\"discordRefresh\", \"createdAt\", \"updatedAt\")" +
 							"VALUES (?, ?, ?, ?, ?, ?, ?)", userID, trelloToken, trelloID, discordToken,
 					discordRefresh, now, now);
-		} catch (DuplicateKeyException e) {
+		}
+		catch (DuplicateKeyException e)
+		{
 			response.sendRedirect("/alreadyauthorized");
 			return;
 		}
