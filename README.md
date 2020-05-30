@@ -22,8 +22,7 @@ server.servlet.session.timeout=<TIMEOUT_IN_SECONDS>
 spring.session.store-type=jdbc
 spring.session.jdbc.initialize-schema: always
 
-server.port=<YOUR_PORT>
-server.hostname=<YOUR_HOSTNAME>
+server.hostname=<YOUR_HOSTNAME> (this includes port)
 ```
 ## Code style
 
