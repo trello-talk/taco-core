@@ -15,4 +15,9 @@ public class RootController {
 		request.getSession();
 		response.sendRedirect("/discordoauth");
 	}
+
+	@GetMapping("/trello/auth")
+	public void oldRootController(HttpServletResponse response) throws IOException {
+		response.sendRedirect("/");
+	}
 }
