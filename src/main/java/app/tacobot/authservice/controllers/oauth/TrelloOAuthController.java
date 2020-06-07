@@ -1,4 +1,4 @@
-package com.example.restservice.controllers.oauth;
+package app.tacobot.authservice.controllers.oauth;
 
 import java.io.*;
 import java.util.Date;

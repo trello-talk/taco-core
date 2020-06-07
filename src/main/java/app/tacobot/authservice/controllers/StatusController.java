@@ -1,4 +1,4 @@
-package com.example.restservice.controllers;
+package app.tacobot.authservice.controllers;
 
 import javax.servlet.http.HttpServletRequest;
 
