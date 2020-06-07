@@ -1,4 +1,4 @@
-package com.example.restservice;
+package app.tacobot.authservice;
 
 
 import org.springframework.boot.SpringApplication;
