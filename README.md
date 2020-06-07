@@ -4,15 +4,7 @@ Backend auth server for Taco rewrite
 
 ## Configuration
 
-Create an `application.properties` file with the following properties:
-```
-spring.datasource.url=<DB_JDBC_URL>
-spring.datasource.username=<DB_USERNAME>
-spring.datasource.password=<DB_PASSWORD>
-
-discord.client_id=<YOUR_CLIENT_ID>
-discord.client_secret=<YOUR_CLIENT_SECRET>
-discord.user_agent=Taco Core (https://github.com/trello-talk/taco-core, WIP)
+Copy the `.application.properties` file to `application.properties`
 
 trello.api_key=<YOUR_API_KEY>
 trello.api_secret=<YOUR_API_SECRET>
@@ -39,10 +31,8 @@ It is also helpful to note that you before applying formatting with Spotless you
 ## Setup
 
 - Run the application by using `./gradlew bootRun`.
-- Build the JAR file by using `./gradlew build` and then run the JAR file, as follows:
-
-	`java -jar build/libs/gs-rest-service-0.1.0.jar`
+- Build the JAR file by using `./gradlew buildJar`.
 
 ## Testing
 
-- Visit http://localhost:8080/greeting
+- Visit http://localhost:8080/
