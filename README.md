@@ -6,17 +6,6 @@ Backend auth server for Taco rewrite
 
 Copy the `.application.properties` file to `application.properties`
 
-trello.api_key=<YOUR_API_KEY>
-trello.api_secret=<YOUR_API_SECRET>
-trello.app_name=<YOUR_APP_NAME>
-
-server.servlet.session.timeout=<TIMEOUT_IN_SECONDS>
-spring.session.store-type=jdbc
-spring.session.jdbc.initialize-schema: always
-
-server.hostname=<YOUR_HOSTNAME> (if you're running this through a proxy, this is the external url after the proxy)
-server.port=<YOUR_PORT>
-```
 ## Code style
 
 - Run `./gradlew initCodeStyle` to pull IntelliJ IDEA project code style file from Gist.
