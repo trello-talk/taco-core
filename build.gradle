@@ -8,7 +8,7 @@ plugins {
 apply from: "https://git.io/JfekU"
 
 group = 'io.github.trellotalk'
-version = '0.1.0-RETHINK'
+version = '0.2.0-RETHINK'
 sourceCompatibility = '1.8'
 
 repositories {
