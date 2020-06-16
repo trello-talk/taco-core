@@ -115,17 +115,18 @@ public class TrelloOAuthController {
 			return;
 		}
 
-		try {
-			jdbcTemplate.update(
-					"INSERT INTO users " +
-							"(\"userID\", \"trelloToken\", \"trelloID\", \"discordToken\", " +
-							"\"discordRefresh\", \"createdAt\", \"updatedAt\")" +
-							"VALUES (?, ?, ?, ?, ?, ?, ?)", userID, trelloToken, trelloID, discordToken,
-					discordRefresh, now, now);
-		} catch (DuplicateKeyException e) {
-			response.sendRedirect("/alreadyauthorized");
-			return;
-		}
+		jdbcTemplate.update(
+				"INSERT INTO users " +
+						"(\"userID\", \"trelloToken\", \"trelloID\", \"discordToken\", " +
+						"\"discordRefresh\", \"createdAt\", \"updatedAt\")" +
+						"VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT (\"userID\") DO UPDATE " +
+						"SET \"trelloToken\"=?, " +
+						"\"trelloID\"=?",
+				userID,
+				trelloToken,
+				trelloID,	discordToken,
+				discordRefresh, now, now,
+				trelloToken, trelloID);
 
 		response.sendRedirect("/success");
 	}
