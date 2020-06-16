@@ -7,8 +7,8 @@ plugins {
 // Personal Spotless formatting rules
 apply from: "https://git.io/JfekU"
 
-group = 'io.github.trellotalk'
-version = '0.2.0'
+group = 'io.github.trello-talk'
+version = '0.3.0'
 sourceCompatibility = '1.8'
 
 repositories {
