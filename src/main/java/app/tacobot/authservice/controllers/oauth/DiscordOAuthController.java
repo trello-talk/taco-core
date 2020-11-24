@@ -46,7 +46,7 @@ public class DiscordOAuthController {
 		String state = new BigInteger(130, new SecureRandom()).toString(32);
 		session.setAttribute("state", state);
 
-		response.sendRedirect("https://discordapp.com/oauth2/authorize" +
+		response.sendRedirect("https://discord.com/oauth2/authorize" +
 				"?client_id=" + clientId +
 				"&redirect_uri=" + hostname + "/discordredirect" +
 				"&state=" + state +
@@ -75,7 +75,7 @@ public class DiscordOAuthController {
 			return;
 		}
 
-		JSONObject json = Unirest.post("https://discordapp.com/api/oauth2/token")
+		JSONObject json = Unirest.post("https://discord.com/api/oauth2/token")
 				.header("Content-Type", "application/x-www-form-urlencoded")
 				.header("User-Agent", userAgent)
 				.field("grant_type", "authorization_code")
